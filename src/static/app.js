@@ -304,13 +304,23 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
+  function escapeHtml(value) {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
   function getActivityShareKey(activityName) {
     return activityName
-      .normalize("NFKC")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
       .trim()
       .toLowerCase()
       .replace(/['’]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
       .replace(/^-+|-+$/g, "");
   }
 
@@ -614,6 +624,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailBody = encodeURIComponent(`${shareText}\n\n${shareUrl}`);
     const whatsAppText = encodeURIComponent(`${shareText} ${shareUrl}`);
     const quickShareLabel = navigator.share ? "📤 Share" : "🔗 Copy Link";
+    const escapedActivityName = escapeHtml(name);
+    const escapedShareGroupLabel = escapeHtml(`Share ${name}`);
+    const escapedQuickShareLabel = escapeHtml(`Share ${name}`);
+    const escapedEmailShareLabel = escapeHtml(`Email ${name} to a friend`);
+    const escapedWhatsAppShareLabel = escapeHtml(
+      `Share ${name} on WhatsApp`
+    );
 
     // Create activity tag
     const tagHtml = `
@@ -637,7 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activityCard.innerHTML = `
       ${tagHtml}
-      <h4>${name}</h4>
+      <h4>${escapedActivityName}</h4>
       <p>${details.description}</p>
       <p class="tooltip">
         <strong>Schedule:</strong> ${formattedSchedule}
@@ -684,18 +701,18 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
-        <div class="share-actions" role="group" aria-label="Share ${name}">
+        <div class="share-actions" role="group" aria-label="${escapedShareGroupLabel}">
           <button
             class="share-button quick-share-button"
             type="button"
-            aria-label="Share ${name}"
+            aria-label="${escapedQuickShareLabel}"
           >
             ${quickShareLabel}
           </button>
           <a
             class="share-button share-link-button"
             href="mailto:?subject=${emailSubject}&body=${emailBody}"
-            aria-label="Email ${name} to a friend"
+            aria-label="${escapedEmailShareLabel}"
           >
             ✉ Email
           </a>
@@ -704,7 +721,7 @@ document.addEventListener("DOMContentLoaded", () => {
             href="https://wa.me/?text=${whatsAppText}"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Share ${name} on WhatsApp"
+            aria-label="${escapedWhatsAppShareLabel}"
           >
             💬 WhatsApp
           </a>
