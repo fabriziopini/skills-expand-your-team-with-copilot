@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
+  const schoolName =
+    document.querySelector("header h1")?.textContent?.trim() || "Our School";
 
   // Activity categories with corresponding colors
   const activityTypes = {
@@ -337,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getActivityShareText(activityName, formattedSchedule) {
-    return `Check out ${activityName} at Mergington High School. It meets ${formattedSchedule}.`;
+    return `Check out ${activityName} at ${schoolName}. It meets ${formattedSchedule}.`;
   }
 
   async function copyActivityShareLink(activityName) {
@@ -619,12 +621,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const shareUrl = getActivityShareUrl(name);
     const shareText = getActivityShareText(name, formattedSchedule);
     const emailSubject = encodeURIComponent(
-      `Check out ${name} at Mergington High School`
+      `Check out ${name} at ${schoolName}`
     );
     const emailBody = encodeURIComponent(`${shareText}\n\n${shareUrl}`);
     const whatsAppText = encodeURIComponent(`${shareText} ${shareUrl}`);
     const quickShareLabel = navigator.share ? "📤 Share" : "🔗 Copy Link";
     const escapedActivityName = escapeHtml(name);
+    const escapedDescription = escapeHtml(details.description);
+    const escapedFormattedSchedule = escapeHtml(formattedSchedule);
     const escapedShareGroupLabel = escapeHtml(`Share ${name}`);
     const escapedQuickShareLabel = escapeHtml(`Share ${name}`);
     const escapedEmailShareLabel = escapeHtml(`Email ${name} to a friend`);
@@ -655,9 +659,9 @@ document.addEventListener("DOMContentLoaded", () => {
     activityCard.innerHTML = `
       ${tagHtml}
       <h4>${escapedActivityName}</h4>
-      <p>${details.description}</p>
+      <p>${escapedDescription}</p>
       <p class="tooltip">
-        <strong>Schedule:</strong> ${formattedSchedule}
+        <strong>Schedule:</strong> ${escapedFormattedSchedule}
         <span class="tooltip-text">Regular meetings at this time throughout the semester</span>
       </p>
       ${capacityIndicator}
