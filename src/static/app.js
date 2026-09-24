@@ -304,6 +304,16 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
+  function getActivityShareKey(activityName) {
+    return activityName
+      .normalize("NFKC")
+      .trim()
+      .toLowerCase()
+      .replace(/['’]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   function getSharedActivityKey() {
     const params = new URLSearchParams(window.location.search);
     return params.get("activity");
@@ -312,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function getActivityShareUrl(activityName) {
     const shareUrl = new URL(window.location.href);
     shareUrl.hash = "";
-    shareUrl.searchParams.set("activity", activityName);
+    shareUrl.searchParams.set("activity", getActivityShareKey(activityName));
     return shareUrl.toString();
   }
 
@@ -573,7 +583,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
     activityCard.className = "activity-card";
-    activityCard.dataset.activityKey = name;
+    activityCard.dataset.activityKey = getActivityShareKey(name);
 
     // Calculate spots and capacity
     const totalSpots = details.max_participants;
@@ -675,10 +685,18 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
         <div class="share-actions" role="group" aria-label="Share ${name}">
-          <button class="share-button quick-share-button" type="button">
+          <button
+            class="share-button quick-share-button"
+            type="button"
+            aria-label="Share ${name}"
+          >
             ${quickShareLabel}
           </button>
-          <a class="share-button share-link-button" href="mailto:?subject=${emailSubject}&body=${emailBody}">
+          <a
+            class="share-button share-link-button"
+            href="mailto:?subject=${emailSubject}&body=${emailBody}"
+            aria-label="Email ${name} to a friend"
+          >
             ✉ Email
           </a>
           <a
@@ -686,6 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
             href="https://wa.me/?text=${whatsAppText}"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Share ${name} on WhatsApp"
           >
             💬 WhatsApp
           </a>
