@@ -304,18 +304,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
-  function normalizeActivityName(activityName) {
-    return activityName.trim().toLowerCase();
-  }
-
-  function getSharedActivityName() {
+  function getSharedActivityKey() {
     const params = new URLSearchParams(window.location.search);
     return params.get("activity");
   }
 
   function getActivityShareUrl(activityName) {
     const shareUrl = new URL(window.location.href);
-    shareUrl.search = "";
     shareUrl.hash = "";
     shareUrl.searchParams.set("activity", activityName);
     return shareUrl.toString();
@@ -374,19 +369,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function highlightSharedActivityCard() {
-    const sharedActivityName = getSharedActivityName();
+    const sharedActivityKey = getSharedActivityKey();
 
-    if (!sharedActivityName) {
+    if (!sharedActivityKey) {
       return;
     }
 
-    const normalizedSharedActivityName =
-      normalizeActivityName(sharedActivityName);
     let matchingCard = null;
 
     activitiesList.querySelectorAll(".activity-card").forEach((activityCard) => {
-      const isSharedActivity =
-        activityCard.dataset.activityName === normalizedSharedActivityName;
+      const isSharedActivity = activityCard.dataset.activityKey === sharedActivityKey;
 
       activityCard.classList.toggle(
         "shared-activity-highlight",
@@ -581,7 +573,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
     activityCard.className = "activity-card";
-    activityCard.dataset.activityName = normalizeActivityName(name);
+    activityCard.dataset.activityKey = name;
 
     // Calculate spots and capacity
     const totalSpots = details.max_participants;
