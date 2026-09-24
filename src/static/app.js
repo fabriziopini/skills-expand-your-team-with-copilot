@@ -336,8 +336,12 @@ document.addEventListener("DOMContentLoaded", () => {
         temporaryInput.value = shareUrl;
         document.body.appendChild(temporaryInput);
         temporaryInput.select();
-        document.execCommand("copy");
+        const copySucceeded = document.execCommand("copy");
         document.body.removeChild(temporaryInput);
+
+        if (!copySucceeded) {
+          throw new Error("Copy command was not successful.");
+        }
       }
 
       showMessage("Share link copied. You can send it to a friend now.", "success");
@@ -678,7 +682,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
-        <div class="share-actions" aria-label="Share ${name}">
+        <div class="share-actions" role="group" aria-label="Share ${name}">
           <button class="share-button quick-share-button" type="button">
             ${quickShareLabel}
           </button>
