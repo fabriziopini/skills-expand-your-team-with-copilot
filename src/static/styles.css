@@ -30,6 +30,36 @@
   --error-light: #ffebee;
   --info: #0c5460;
   --info-light: #d1ecf1;
+  --header-control-bg: rgba(255, 255, 255, 0.2);
+  --header-control-hover-bg: rgba(255, 255, 255, 0.3);
+}
+
+body[data-theme="dark"] {
+  --primary: #7c8cff;
+  --primary-light: #a5b0ff;
+  --primary-dark: #5b6ee5;
+  --primary-text: #f5f7ff;
+  --secondary: #ffb74d;
+  --secondary-light: #ffd180;
+  --secondary-dark: #f57c00;
+  --secondary-text: #1e1e1e;
+  --background: #121212;
+  --surface: #1f1f1f;
+  --text-primary: #f5f5f5;
+  --text-secondary: #c7c7c7;
+  --border: #3a3a3a;
+  --border-light: #2a2a2a;
+  --border-focus: #606060;
+  --success: #81c784;
+  --success-light: #1f3b23;
+  --warning: #ffb74d;
+  --warning-light: #3a2e15;
+  --error: #ef9a9a;
+  --error-light: #442626;
+  --info: #81d4fa;
+  --info-light: #173746;
+  --header-control-bg: rgba(255, 255, 255, 0.12);
+  --header-control-hover-bg: rgba(255, 255, 255, 0.22);
 }
 
 * {
@@ -617,6 +647,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
@@ -639,7 +672,7 @@ footer {
   display: flex;
   align-items: center;
   gap: 5px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--header-control-bg);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: 0.85rem;
@@ -647,7 +680,7 @@ footer {
 }
 
 .icon-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--header-control-hover-bg);
 }
 
 .user-icon {
@@ -656,11 +689,20 @@ footer {
 
 #logout-button {
   padding: 3px 10px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--header-control-bg);
   font-size: 0.8rem;
   border-radius: 20px;
 }
 
 #logout-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--header-control-hover-bg);
+}
+
+@media (max-width: 767px) {
+  #user-controls {
+    position: static;
+    justify-content: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
 }
